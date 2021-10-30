@@ -4,7 +4,7 @@ const response = require("../../../network/response");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-    Controller.list()
+    Controller.listUser()
         .then((list) => {
             response.success(req, res, list, 200);
         })
@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-    Controller.get(req.params.id)
+    Controller.getUser(req.params.id)
         .then((user) => {
             response.success(req, res, user, 200);
         })
@@ -25,8 +25,8 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
     Controller.addUser(req.body)
-        .then((user) => {
-            response.success(req, res, user, 200);
+        .then(() => {
+            response.success(req, res, req.body, 200);
         })
         .catch((err) => {
             response.error(req, res, err.message, 500);
