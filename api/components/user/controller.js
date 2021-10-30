@@ -1,10 +1,29 @@
 const TABLA = "user";
-const store = require("../../../store/dummy");
 
-const list = () => {
-    return store.list(TABLA);
-};
+module.exports = (injectedStore) => {
+    let store = injectedStore;
+    if (!store) {
+        store = require("../../../store/dummy");
+    }
 
-module.exports = {
-    list,
+    const listUser = () => {
+        return store.list(TABLA);
+    };
+
+    const getUser = (id) => {
+        return store.get(TABLA, id);
+    };
+    const addUser = (data) => {
+        return store.upsert(TABLA, data);
+    };
+    const deleteUser = (id) => {
+        return store.remove(TABLA, id);
+    };
+
+    return {
+        listUser,
+        getUser,
+        addUser,
+        deleteUser,
+    };
 };
