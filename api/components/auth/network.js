@@ -1,6 +1,16 @@
 const express = require("express");
+const Controller = require("./index");
+const response = require("../../../network/response");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    res.send("Hello World!");
+router.post("/login", (req, res) => {
+    Controller.login(req.body.username, req.body.password)
+        .then((token) => {
+            response.success(req, res, token, 200);
+        })
+        .catch((err) => {
+            response.error(req, res, err.message, 400);
+        });
 });
+
+module.exports = router;

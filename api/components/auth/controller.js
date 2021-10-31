@@ -1,4 +1,6 @@
 const TABLA = "auth";
+const bcrypt = require("bcrypt");
+const auth = require("../../../auth");
 
 module.exports = (injectedStore) => {
     let store = injectedStore;
@@ -6,7 +8,17 @@ module.exports = (injectedStore) => {
         store = require("../../../store/dummy");
     }
 
-    const upsert = (data) => {
+    const login = async (username, password) => {
+        const data = await store.query(TABLA, { username: username });
+        if (decodePassword(password, data.password)) {
+            //Generar token
+            return auth.sign(data);
+        } else {
+            throw new Error("Usuario o contraseña incorrectos");
+        }
+    };
+
+    const upsert = async (data) => {
         const authData = {
             id: data.id,
         };
@@ -14,13 +26,23 @@ module.exports = (injectedStore) => {
             authData.username = data.username;
         }
         if (data.password) {
-            authData.password = data.password;
+            authData.password = await encodePassword(data.password);
         }
 
         return store.upsert(TABLA, authData);
     };
 
+    const encodePassword = async (password) => {
+        const salt = await bcrypt.genSalt(10);
+        return bcrypt.hash(password, salt);
+    };
+
+    const decodePassword = async (password, passwordEncoded) => {
+        return bcrypt.compare(password, passwordEncoded);
+    };
+
     return {
         upsert,
+        login,
     };
 };

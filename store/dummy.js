@@ -1,5 +1,5 @@
 const db = {
-    user: [{ id: "1", name: "Carlos" }],
+    user: [{ id: "1", name: "Carlos", username: "carlos", password: "123" }],
 };
 
 const list = async (table) => {
@@ -22,9 +22,17 @@ const remove = async (table, id) => {
     return true;
 };
 
+const query = async (table, q) => {
+    const collection = await list(table);
+    const keys = Object.keys(q);
+    const key = keys[0];
+    return collection.filter((item) => item[key] === q[key])[0] || null;
+};
+
 module.exports = {
     list,
     get,
     upsert,
     remove,
+    query,
 };
