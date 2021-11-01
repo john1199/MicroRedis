@@ -1,6 +1,11 @@
-//const store = require("../../../store/database");
-const store = require("../../../store/remote-mysql");
+const config = require("../../../config");
+var store;
+if (config.remoteDB) {
+    store = require("../../../store/remote-mysql");
+} else {
+    store = require("../../../store/database");
+}
 const controller = require("./controller");
 
-//inyectamos el store al controlador 
+//inyectamos el store al controlador
 module.exports = controller(store);

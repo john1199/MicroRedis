@@ -23,7 +23,6 @@ const handleConnection = () => {
         }
     });
     connection.on("error", (err) => {
-        console.error("[db err]", err);
         if (err.code === "PROTOCOL_CONNECTION_LOST") {
             handleConnection();
         } else {
