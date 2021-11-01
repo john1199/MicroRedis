@@ -2,14 +2,23 @@ const TABLA = "user";
 const { nanoid } = require("nanoid");
 const auth = require("../auth");
 
-module.exports = (injectedStore) => {
+module.exports = (injectedStore, injectedCache) => {
+    let cache = injectedCache;
     let store = injectedStore;
     if (!store) {
         store = require("../../../store/dummy");
     }
+    if (!cache) {
+        cache = require("../../../cache/dummy");
+    }
 
-    const listUser = () => {
-        return store.list(TABLA);
+    const listUser = async () => {
+        let users = await cache.list(TABLA);
+        if (!users) {
+            users = await store.list(TABLA);
+            cache.update(TABLA, users);
+        }
+        return users;
     };
 
     const getUser = (id) => {
@@ -41,18 +50,18 @@ module.exports = (injectedStore) => {
         });
     };
     async function following(user) {
-        const join = {}
-        join[TABLA] = 'user_to'; // { user: 'user_to' }
+        const join = {};
+        join[TABLA] = "user_to"; // { user: 'user_to' }
         const query = { user_from: user };
-		
-		return await store.query(TABLA + '_follow', query, join);
-	}
+
+        return  store.query(TABLA + "_follow", query, join);
+    }
     return {
         listUser,
         getUser,
         addUser,
         deleteUser,
         follow,
-        following
+        following,
     };
 };

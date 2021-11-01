@@ -77,7 +77,6 @@ const update = (table, data) => {
 };
 
 const upsert = (table, data) => {
-    console.log(data);
     if (data && data.id) {
         return update(table, data);
     } else {
