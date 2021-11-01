@@ -12,7 +12,7 @@ module.exports = (injectedStore) => {
         const data = await store.query(TABLA, { username: username });
         if (decodePassword(password, data.password)) {
             //Generar token
-            return auth.sign(data);
+            return auth.sign(JSON.stringify(data));
         } else {
             throw new Error("Usuario o contraseña incorrectos");
         }
@@ -28,8 +28,7 @@ module.exports = (injectedStore) => {
         if (data.password) {
             authData.password = await encodePassword(data.password);
         }
-
-        return store.upsert(TABLA, authData);
+        return store.insert(TABLA, authData);
     };
 
     const encodePassword = async (password) => {

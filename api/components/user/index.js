@@ -1,4 +1,4 @@
-const store = require("../../../store/dummy");
+const store = require("../../../store/database");
 const controller = require("./controller");
 
 //inyectamos el store al controlador 

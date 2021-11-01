@@ -10,13 +10,29 @@ router.get("/", (req, res, next) => {
         .then((list) => {
             response.success(req, res, list, 200);
         })
-        .catch(next());
+        .catch(next);
 });
 
 router.get("/:id", (req, res, next) => {
     Controller.getUser(req.params.id)
         .then((user) => {
             response.success(req, res, user, 200);
+        })
+        .catch(next);
+});
+
+router.get("/follow/:id", authMiddleware("follow"), (req, res, next) => {
+    Controller.follow(req.user.id, req.params.id)
+        .then((data) => {
+            response.success(req, res, data, 201);
+        })
+        .catch(next);
+});
+
+router.get("/:id/following", (req, res, next) => {
+    return Controller.following(req.params.id)
+        .then((data) => {
+            return response.success(req, res, data, 200);
         })
         .catch(next);
 });
